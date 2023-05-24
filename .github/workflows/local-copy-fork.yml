@@ -5,24 +5,29 @@ on:
     inputs:
       pr:
         required: true
-        type: string
+        type: number
 
 jobs:
   create-branch:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v3
       - name: Create a local copy of fork
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          forkFullName="$(gh pr view ${{ github.event.inputs.pr }}" --json headRepositoryOwner,headRepository --jq '.headRepositoryOwner.login + "/" + .headRepository.name')"
-          forkBranch="$(gh pr view ${{ github.event.inputs.pr }}" --json headRefName --jq '.headRefName')"
-          baseBranch="$(gh pr view ${{ github.event.inputs.pr }}" --json baseRefName --jq '.baseRefName')"
-          prTitle="$(gh pr view ${{ github.event.inputs.pr }}" --json baseRefName --jq '.baseRefName')"
-          prBody="$(gh pr view ${{ github.event.inputs.pr }}" --json body --jq '.body')"
+          forkFullName="$(gh pr view ${{ github.event.inputs.pr }} --json headRepositoryOwner,headRepository --jq '.headRepositoryOwner.login + "/" + .headRepository.name')"
+          forkBranch="$(gh pr view ${{ github.event.inputs.pr }} --json headRefName --jq '.headRefName')"
+          baseBranch="$(gh pr view ${{ github.event.inputs.pr }} --json baseRefName --jq '.baseRefName')"
+          prTitle="$(gh pr view ${{ github.event.inputs.pr }} --json baseRefName --jq '.baseRefName')"
+          prBody="$(gh pr view ${{ github.event.inputs.pr }} --json body --jq '.body')"
 
           git remote add fork https://github.com/"${forkFullName}"
           git fetch fork "${forkBranch}"
-          git checkout -b "local/${forkFullName}:${forkBranch}" "fork/${forkBranch}"
-          git push --set-upstream origin "local/${forkFullName}:${forkBranch}"
-          newPrURL="$(gh pr create --base "${baseBranch}" --title "${prTitle}" --body "${prBody}")"
-          gh pr close "${{ github.event.inputs.pr }}" --comment "A clone of this PR is now being processed at: ${newPrURL}"
+          git checkout -b "local/${forkFullName}/${forkBranch}" "fork/${forkBranch}"
+          git push --set-upstream origin "local/${forkFullName}/${forkBranch}"
+          #newPrURL="$(gh pr create --base "${baseBranch}" --title "${prTitle}" --body "${prBody}")"
+          #gh pr close "${{ github.event.inputs.pr }}" --comment "A clone of this PR is now being processed at: ${newPrURL}"
