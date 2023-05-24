@@ -10,11 +10,14 @@ on:
 jobs:
   create-branch:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
     steps:
       - uses: actions/checkout@v3
       - name: Create a local copy of fork
         env:
-          GITHUB_TOKEN: ${{ secrets.PR_GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           forkFullName="$(gh pr view ${{ github.event.inputs.pr }} --json headRepositoryOwner,headRepository --jq '.headRepositoryOwner.login + "/" + .headRepository.name')"
           forkBranch="$(gh pr view ${{ github.event.inputs.pr }} --json headRefName --jq '.headRefName')"
