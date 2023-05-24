@@ -14,7 +14,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: Create a local copy of fork
         env:
-          GH_TOKEN: ${{ secrets.PR_GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           forkFullName="$(gh pr view ${{ github.event.inputs.pr }} --json headRepositoryOwner,headRepository --jq '.headRepositoryOwner.login + "/" + .headRepository.name')"
           forkBranch="$(gh pr view ${{ github.event.inputs.pr }} --json headRefName --jq '.headRefName')"
@@ -26,5 +26,5 @@ jobs:
           git fetch fork "${forkBranch}"
           git checkout -b "local/${forkFullName}/${forkBranch}" "fork/${forkBranch}"
           git push --set-upstream origin "local/${forkFullName}/${forkBranch}"
-          newPrURL="$(gh pr create --base "${baseBranch}" --title "${prTitle}" --body "${prBody}")"
-          gh pr close "${{ github.event.inputs.pr }}" --comment "A clone of this PR is now being processed at: ${newPrURL}"
+          #newPrURL="$(gh pr create --base "${baseBranch}" --title "${prTitle}" --body "${prBody}")"
+          #gh pr close "${{ github.event.inputs.pr }}" --comment "A clone of this PR is now being processed at: ${newPrURL}"
