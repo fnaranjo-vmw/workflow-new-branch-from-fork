@@ -13,6 +13,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Create a local copy of fork
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           forkFullName="$(gh pr view ${{ github.event.inputs.pr }} --json headRepositoryOwner,headRepository --jq '.headRepositoryOwner.login + "/" + .headRepository.name')"
           forkBranch="$(gh pr view ${{ github.event.inputs.pr }} --json headRefName --jq '.headRefName')"
