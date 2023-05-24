@@ -29,5 +29,5 @@ jobs:
           git fetch fork "${forkBranch}"
           git checkout -b "local/${forkFullName}/${forkBranch}" "fork/${forkBranch}"
           git push --set-upstream origin "local/${forkFullName}/${forkBranch}"
-          #newPrURL="$(gh pr create --base "${baseBranch}" --title "${prTitle}" --body "${prBody}")"
-          #gh pr close "${{ github.event.inputs.pr }}" --comment "A clone of this PR is now being processed at: ${newPrURL}"
+          newPrURL="$(gh pr create --base "${baseBranch}" --title "${prTitle}" --body "${prBody}")"
+          gh pr close "${{ github.event.inputs.pr }}" --comment "A clone of this PR is now being processed at: ${newPrURL}"
