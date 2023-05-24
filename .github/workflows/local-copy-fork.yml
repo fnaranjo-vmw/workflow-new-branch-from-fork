@@ -1,4 +1,4 @@
-name: CI
+name: Local Copy of Fork PR
 
 on:
   workflow_dispatch:
