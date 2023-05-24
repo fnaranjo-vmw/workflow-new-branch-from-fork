@@ -5,7 +5,7 @@ on:
     inputs:
       pr:
         required: true
-        type: string
+        type: number
 
 jobs:
   create-branch:
